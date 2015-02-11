@@ -61,6 +61,7 @@ public class PinnedHeaderSectionAdapter extends BaseSectionAdapter<String, Strin
         if (isHeader(firstVisibleItem)) {
             mOverlayHeaderTitle = getItem(firstVisibleItem).toString();
             setHeaderTitle(mOverlayHeaderView, mOverlayHeaderTitle);
+            ((View) overlayView.getParent()).postInvalidate();
         }
 
         //表示されているリストの二番目がヘッダーじゃないと無視する
