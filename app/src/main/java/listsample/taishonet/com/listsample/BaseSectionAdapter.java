@@ -54,7 +54,8 @@ public class BaseSectionAdapter<T1, T2> extends BaseAdapter {
         this.indexPathList = getIndexPathList(sectionList, rowList);
     }
 
-    public Object getFirstHeaderText(int position) {
+    //見えているヘッダーの前のヘッダータイトルを取得する
+    public Object getPresentViewableHeaderText(int position) {
         int index = position;
         while (index >= 0) {
             IndexPath indexPath = indexPathList.get(index);

@@ -51,40 +51,41 @@ public class PinnedHeaderSectionAdapter extends BaseSectionAdapter<String, Strin
             return;
         }
 
+        //overlayviewがセットされていないなら何もしない
         View overlayView = getOverlayHeaderView();
         if (overlayView == null) {
             return;
         }
-        overlayView.setY(0);
 
-        //ヘッダーが切り替わった時に更新する
+        //ヘッダーが一番上に来たらタイトルを更新する
         if (isHeader(firstVisibleItem)) {
             mOverlayHeaderTitle = getItem(firstVisibleItem).toString();
             setHeaderTitle(mOverlayHeaderView, mOverlayHeaderTitle);
         }
 
-        //二番目がヘッダーじゃないと無視する
+        //表示されているリストの二番目がヘッダーじゃないと無視する
         if (!isHeader(firstVisibleItem + 1)) {
+            //ヘッダーが押し出されて、次のヘッダーだったものが一番上にくると以降が実行されないため、
+            // オーバーレイヘッダーが消えたままになる
+            //これを防ぐため、オーバーレイを０調整する処理を入れる
+            overlayView.setY(0);
             return;
         }
 
         //表示するべき文字を取得
-        mOverlayHeaderTitle = getFirstHeaderText(firstVisibleItem).toString();
+        mOverlayHeaderTitle = getPresentViewableHeaderText(firstVisibleItem).toString();
 
         //現在表示されている一番上のViewの次のView
         View nextRow = view.getChildAt(1);
 
         //次の行の上側の位置
         int nextRowPosition = nextRow.getTop();
-        //次の行が表示しているヘッダーの位置に届いていいないとき
-        if (nextRowPosition >= overlayView.getHeight()) {
-            overlayView.setY(0);
-            setHeaderTitle(overlayView, mOverlayHeaderTitle);
-            ((View) overlayView.getParent()).postInvalidate();
-        } else {
-            //次の行のヘッダーがオーバーレイヘッダーに届いた時
+        //次の行が、表示しているヘッダーの位置に届いたとき
+        if (nextRowPosition < overlayView.getHeight()) {
             float offset = nextRowPosition - overlayView.getHeight();
             overlayView.setY(offset);
+            setHeaderTitle(overlayView, mOverlayHeaderTitle);
+            ((View) overlayView.getParent()).postInvalidate();
         }
     }
 }
