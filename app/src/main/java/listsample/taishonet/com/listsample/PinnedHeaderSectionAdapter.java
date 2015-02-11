@@ -57,13 +57,19 @@ public class PinnedHeaderSectionAdapter extends BaseSectionAdapter<String, Strin
         }
         overlayView.setY(0);
 
+        //ヘッダーが切り替わった時に更新する
+        if (isHeader(firstVisibleItem)) {
+            mOverlayHeaderTitle = getItem(firstVisibleItem).toString();
+            setHeaderTitle(mOverlayHeaderView, mOverlayHeaderTitle);
+        }
+
         //二番目がヘッダーじゃないと無視する
         if (!isHeader(firstVisibleItem + 1)) {
             return;
         }
 
         //表示するべき文字を取得
-        String title = getFirstHeaderText(firstVisibleItem).toString();
+        mOverlayHeaderTitle = getFirstHeaderText(firstVisibleItem).toString();
 
         //現在表示されている一番上のViewの次のView
         View nextRow = view.getChildAt(1);
@@ -73,18 +79,12 @@ public class PinnedHeaderSectionAdapter extends BaseSectionAdapter<String, Strin
         //次の行が表示しているヘッダーの位置に届いていいないとき
         if (nextRowPosition >= overlayView.getHeight()) {
             overlayView.setY(0);
-            mOverlayHeaderTitle = title;
-            setHeaderTitle(overlayView, title);
+            setHeaderTitle(overlayView, mOverlayHeaderTitle);
             ((View) overlayView.getParent()).postInvalidate();
         } else {
             //次の行のヘッダーがオーバーレイヘッダーに届いた時
             float offset = nextRowPosition - overlayView.getHeight();
             overlayView.setY(offset);
-            if (!mOverlayHeaderTitle.equals(title)) {
-                mOverlayHeaderTitle = title;
-                setHeaderTitle(overlayView, title);
-                ((View) overlayView.getParent()).postInvalidate();
-            }
         }
     }
 }

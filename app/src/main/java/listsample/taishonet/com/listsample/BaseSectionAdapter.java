@@ -58,7 +58,7 @@ public class BaseSectionAdapter<T1, T2> extends BaseAdapter {
         int index = position;
         while (index >= 0) {
             IndexPath indexPath = indexPathList.get(index);
-            if (indexPath.row == ITEM_VIEW_TYPE_HEADER) {
+            if (isHeader(indexPath)) {
                 return getItem(index);
             }
             index--;
