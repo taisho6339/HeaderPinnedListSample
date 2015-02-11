@@ -1,5 +1,6 @@
 package listsample.taishonet.com.listsample;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +20,9 @@ public class MainActivity extends ActionBarActivity {
         adapter.setOverlayHeaderView(findViewById(R.id.title));
         list.setOnScrollListener(adapter);
         list.setAdapter(adapter);
+
+        Intent intent = new Intent(this, PrefListActivity.class);
+        startActivity(intent);
     }
 
 }

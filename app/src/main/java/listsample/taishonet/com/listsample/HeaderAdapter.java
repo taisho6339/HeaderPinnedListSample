@@ -30,7 +30,6 @@ public class HeaderAdapter extends ArrayAdapter<HeaderAdapter.Item> implements A
     private View mOverlayHeaderView;
     private String mOverlayHeaderTitle;
 
-
     public HeaderAdapter(Context context, String[] titles, int[] imageIds) {
         super(context, 0, new ArrayList<Item>());
         mInflater = LayoutInflater.from(context);
@@ -39,7 +38,6 @@ public class HeaderAdapter extends ArrayAdapter<HeaderAdapter.Item> implements A
             add(new Item(titles[i], imageIds[i]));
         }
     }
-
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -78,24 +76,31 @@ public class HeaderAdapter extends ArrayAdapter<HeaderAdapter.Item> implements A
     }
 
     private void performOverlayHeader(AbsListView view, int firstVisibleItem) {
+
         View overlayView = getOverlayHeaderView();
         if (overlayView == null) {
             return;
         }
 
+        //リストが空の場合は何もしない
         if (view.getChildCount() == 0) {
             return;
         }
 
+        //表示するべき文字を取得
         String title = getItem(firstVisibleItem).title;
 
+        //現在表示されている一番上のView
         View row = view.getChildAt(0);
         View header = row.findViewById(R.id.title);
 
-        //次の行の上の位置
+        //次の行の上側の位置
         int nextRowPosition = row.getTop() + row.getHeight();
+        //次の行が表示しているヘッダーの位置に届いていいないとき
         if (nextRowPosition >= overlayView.getHeight()) {
             overlayView.setY(0);
+            //一番上の行のヘッダーが画面の端と同じなら
+            //オーバーレイではなくリストのヘッダーを表示
             if (row.getTop() == 0) {
                 header.setVisibility(View.VISIBLE);
                 overlayView.setVisibility(View.GONE);
@@ -107,13 +112,14 @@ public class HeaderAdapter extends ArrayAdapter<HeaderAdapter.Item> implements A
             setHeaderTitle(overlayView, title);
             ((View) overlayView.getParent()).postInvalidate();
         } else {
+            //次の行のヘッダーがオーバーレイヘッダーに届いた時
             float offset = nextRowPosition - overlayView.getHeight();
             overlayView.setY(offset);
 
             header.setVisibility(View.VISIBLE);
             overlayView.setVisibility(View.VISIBLE);
 
-            if (mOverlayHeaderTitle.equals(title)) {
+            if (!mOverlayHeaderTitle.equals(title)) {
                 mOverlayHeaderTitle = title;
                 setHeaderTitle(overlayView, title);
                 ((View) overlayView.getParent()).postInvalidate();
